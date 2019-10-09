@@ -13,11 +13,15 @@ if (file_exists(__DIR__.'/../.env')) {
 $httpClient = new Client();
 
 $request = Request::createFromGlobals();
-$payload = $request->getContent();
+$payloadString = $request->getContent();
 
-file_put_contents('receive.txt', $payload);
+file_put_contents('receive.txt', $payloadString);
 
-$payload = json_decode($payload, true);
+$payload = [];
+parse_str($payloadString, $payload);
+
+file_put_contents('receive_parse.txt', var_export($payload, true));
+
 
 if ($payload['type'] === 'message_action') {
     $dialogData = [
