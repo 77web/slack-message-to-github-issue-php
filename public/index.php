@@ -4,7 +4,7 @@ use GuzzleHttp\Client;
 use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 
-require __DIR__.'../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 if (file_exists(__DIR__.'/../.env')) {
     $dotenv = Dotenv::create(__DIR__ . '/../')->load;
