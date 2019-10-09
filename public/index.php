@@ -1,6 +1,8 @@
 <?php
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as HttpClient;
+use Github\Client as GithubClient;
+use Github\Api\Issue as GithubIssueClient;
 use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,7 +14,9 @@ if (file_exists(__DIR__.'/../.env')) {
     file_put_contents('log.txt', 'no .env found');
 }
 
-$httpClient = new Client();
+$httpClient = new HttpClient();
+$githubClient = new GithubClient();
+$githubClient->authenticate(getenv('GITHUB_OAUTH_TOKEN'));
 
 $request = Request::createFromGlobals();
 $payloadString = $request->getContent();
@@ -22,8 +26,6 @@ file_put_contents('receive.txt', $payloadString);
 $parsed = [];
 parse_str($payloadString, $parsed);
 $payload = json_decode($parsed['payload'], true);
-
-file_put_contents('receive_parse.txt', var_export($payload, true));
 
 
 if ($payload['type'] === 'message_action') {
@@ -52,7 +54,6 @@ if ($payload['type'] === 'message_action') {
             'authorization' => 'Bearer '.getenv('SLACK_OAUTH_TOKEN'),
         ],
     ]);
-    file_put_contents('response.txt', $response->getBody()->getContents());
 } elseif ($payload['type'] === 'dialog_submission') {
    // gather info to create issue
     $submission = $payload['submission'];
@@ -63,5 +64,10 @@ if ($payload['type'] === 'message_action') {
     $title = $submission['issue_title'];
     $description = implode("\n", [$messageBody, $url]);
     // post to github
+    $issueClient = new GithubIssueClient($githubClient);
+    $issueClient->create(getenv('GITHUB_ORG'), getenv('GITHUB_REPOSITORY'), [
+        'title' => $title,
+        'body' => $description,
+    ]);
 }
 
