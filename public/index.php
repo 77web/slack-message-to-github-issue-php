@@ -31,7 +31,7 @@ if ($payload['type'] === 'message_action') {
         'trigger_id' => $payload['trigger_id'],
         'dialog' => json_encode([
             'callback_id' => 'div_development_create_lisket_support_issue',
-            'title' => 'operations-supportにissueを作る',
+            'title' => 'サポートissue化',
             'submit_label' => 'issue作成',
             'state' => 'Limo',
             'elements' => [
