@@ -28,7 +28,7 @@ if ($payload['type'] === 'message_action') {
     $dialogData = [
         'token' => getenv('SLACK_OAUTH_TOKEN'),
         'trigger_id' => $payload['trigger_id'],
-        'dialog' => [
+        'dialog' => json_encode([
             'callback_id' => 'div_development_create_lisket_support_issue',
             'title' => 'operations-supportにissueを作る',
             'submit_label' => 'issue作成',
@@ -40,7 +40,7 @@ if ($payload['type'] === 'message_action') {
                     'name' => 'issue_title',
                 ],
             ],
-        ],
+        ]),
     ];
 
     // open dialog
