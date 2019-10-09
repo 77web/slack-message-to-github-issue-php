@@ -17,8 +17,9 @@ $payloadString = $request->getContent();
 
 file_put_contents('receive.txt', $payloadString);
 
-$payload = [];
-parse_str($payloadString, $payload);
+$parsed = [];
+parse_str($payloadString, $parsed);
+$payload = json_decode($parsed['payload']);
 
 file_put_contents('receive_parse.txt', var_export($payload, true));
 
