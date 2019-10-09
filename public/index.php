@@ -48,7 +48,7 @@ if ($payload['type'] === 'message_action') {
     $response = $httpClient->post('https://slack.com/api/dialog.open', [
         'body' => json_encode($dialogData),
         'headers' => [
-            'content-type' => 'application/json',
+            'content-type' => 'application/json; charset=utf-8',
             'authorization' => 'Bearer '.getenv('SLACK_OAUTH_TOKEN'),
         ],
     ]);
