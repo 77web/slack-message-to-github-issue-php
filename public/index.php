@@ -21,11 +21,12 @@ $githubClient->authenticate('http_token', getenv('GITHUB_OAUTH_TOKEN'));
 $request = Request::createFromGlobals();
 $payloadString = $request->getContent();
 
-file_put_contents('receive.txt', $payloadString);
-
 $parsed = [];
 parse_str($payloadString, $parsed);
 $payload = json_decode($parsed['payload'], true);
+
+
+file_put_contents('receive_parsed.txt', var_export($payload, true));
 
 
 if ($payload['type'] === 'message_action') {
