@@ -54,6 +54,14 @@ if ($payload['type'] === 'message_action') {
     ]);
     file_put_contents('response.txt', $response->getBody()->getContents());
 } elseif ($payload['type'] === 'dialog_submission') {
-   // create an issue on operations-support
+   // gather info to create issue
+    $submission = $payload['submission'];
+    $messageBody = $payload['message']['text'];
+    list($ts1, $ts2) = explode('.', $payload['message_ts']);
+    $url = sprintf('https://quartetcom.slack.com/archives/%s/p%s%s', $payload['channel']['id'], $ts1, $ts2);
+    // generate title & desc
+    $title = $submission['issue_title'];
+    $description = implode("\n", [$messageBody, $url]);
+    // post to github
 }
 
