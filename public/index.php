@@ -28,7 +28,6 @@ file_put_contents('receive_parse.txt', var_export($payload, true));
 
 if ($payload['type'] === 'message_action') {
     $dialogData = [
-        'token' => getenv('SLACK_OAUTH_TOKEN'),
         'trigger_id' => $payload['trigger_id'],
         'dialog' => json_encode([
             'callback_id' => 'div_development_create_lisket_support_issue',
@@ -50,6 +49,7 @@ if ($payload['type'] === 'message_action') {
         'body' => json_encode($dialogData),
         'headers' => [
             'content-type' => 'application/json',
+            'authorization' => 'Bearer '.getenv('SLACK_OAUTH_TOKEN'),
         ],
     ]);
     file_put_contents('response.txt', $response->getBody()->getContents());
