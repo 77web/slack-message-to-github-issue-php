@@ -19,7 +19,7 @@ file_put_contents('receive.txt', $payloadString);
 
 $parsed = [];
 parse_str($payloadString, $parsed);
-$payload = json_decode($parsed['payload']);
+$payload = json_decode($parsed['payload'], true);
 
 file_put_contents('receive_parse.txt', var_export($payload, true));
 
