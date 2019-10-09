@@ -44,12 +44,13 @@ if ($payload['type'] === 'message_action') {
     ];
 
     // open dialog
-    $httpClient->post('https://slack.com/api/dialog.open', [
+    $response = $httpClient->post('https://slack.com/api/dialog.open', [
         'body' => json_encode($dialogData),
         'headers' => [
             'content-type' => 'application/json',
         ],
     ]);
+    file_put_contents('response.txt', $response->getBody()->getContents());
 } elseif ($payload['type'] === 'dialog_submission') {
    // create an issue on operations-support
 }
