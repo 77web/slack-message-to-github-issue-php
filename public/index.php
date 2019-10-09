@@ -74,7 +74,7 @@ if ($payload['type'] === 'message_action') {
     $submission = $payload['submission'];
     // generate title & desc
     $title = $submission['issue_title'];
-    $description = implode("\n", [$submission['issue_body'], $submission['slack_url']])
+    $description = implode("\n", [$submission['issue_body'], $submission['slack_url']]);
     // post to github
     $issueClient = new GithubIssueClient($githubClient);
     $issueClient->create(getenv('GITHUB_ORG'), getenv('GITHUB_REPOSITORY'), [
