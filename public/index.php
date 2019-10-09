@@ -30,18 +30,32 @@ file_put_contents('receive_parsed.txt', var_export($payload, true));
 
 
 if ($payload['type'] === 'message_action') {
+    list($ts1, $ts2) = explode('.', $payload['message_ts']);
+    $url = sprintf('https://quartetcom.slack.com/archives/%s/p%s%s', $payload['channel']['id'], $ts1, $ts2);
+
     $dialogData = [
         'trigger_id' => $payload['trigger_id'],
         'dialog' => json_encode([
             'callback_id' => 'div_development_create_lisket_support_issue',
             'title' => 'サポートissue化',
             'submit_label' => 'issue作成',
-            'state' => 'Limo',
             'elements' => [
                 [
                     'type' => 'text',
                     'label' => 'issueタイトル',
                     'name' => 'issue_title',
+                ],
+                [
+                    'type' => 'textarea',
+                    'label' => 'issue内容',
+                    'name' => 'issue_body',
+                    'value' => $payload['message']['text'],
+                ],
+                [
+                    'type' => 'text',
+                    'label' => 'Slack上のURL',
+                    'name' => 'slack_url',
+                    'value' => $url,
                 ],
             ],
         ]),
@@ -58,12 +72,9 @@ if ($payload['type'] === 'message_action') {
 } elseif ($payload['type'] === 'dialog_submission') {
    // gather info to create issue
     $submission = $payload['submission'];
-    $messageBody = $payload['message']['text'];
-    list($ts1, $ts2) = explode('.', $payload['message_ts']);
-    $url = sprintf('https://quartetcom.slack.com/archives/%s/p%s%s', $payload['channel']['id'], $ts1, $ts2);
     // generate title & desc
     $title = $submission['issue_title'];
-    $description = implode("\n", [$messageBody, $url]);
+    $description = implode("\n", [$submission['issue_body'], $submission['slack_url']])
     // post to github
     $issueClient = new GithubIssueClient($githubClient);
     $issueClient->create(getenv('GITHUB_ORG'), getenv('GITHUB_REPOSITORY'), [
