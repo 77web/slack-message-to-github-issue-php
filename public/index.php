@@ -16,7 +16,7 @@ if (file_exists(__DIR__.'/../.env')) {
 
 $httpClient = new HttpClient();
 $githubClient = new GithubClient();
-$githubClient->authenticate(getenv('GITHUB_OAUTH_TOKEN'));
+$githubClient->authenticate('http_token', getenv('GITHUB_OAUTH_TOKEN'));
 
 $request = Request::createFromGlobals();
 $payloadString = $request->getContent();
