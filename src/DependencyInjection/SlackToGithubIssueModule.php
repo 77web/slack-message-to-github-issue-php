@@ -9,6 +9,7 @@ use Quartetcom\SlackToGithubIssue\Action\ActionInterface;
 use Quartetcom\SlackToGithubIssue\Action\CreateGithubIssue;
 use Quartetcom\SlackToGithubIssue\Action\OpenModal;
 use Quartetcom\SlackToGithubIssue\ActionResolver;
+use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 use Ray\Di\AbstractModule;
 
 class SlackToGithubIssueModule extends AbstractModule
@@ -69,6 +70,9 @@ class SlackToGithubIssueModule extends AbstractModule
         $this->bind(ActionResolver::class)->toProvider(ActionResolverProvider::class);
         $this->bind(ActionInterface::class)->annotatedWith('openModalAction')->toProvider(OpenModalActionProvider::class);
         $this->bind(ActionInterface::class)->annotatedWith('createIssueAction')->toProvider(CreateGithubIssueActionProvider::class);
+
+        // MessageFetcherResolver
+        $this->bind(MessageFetcherResolver::class)->annotatedWith('messageFetcherResolver')->toProvider(MessageFetcherResolverProvider::class);
 
     }
 

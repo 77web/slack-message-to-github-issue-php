@@ -6,11 +6,17 @@ namespace Quartetcom\SlackToGithubIssue\DependencyInjection;
 
 use GuzzleHttp\Client;
 use Quartetcom\SlackToGithubIssue\Action\OpenModal;
+use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 use Ray\Di\Di\Named;
 use Ray\Di\ProviderInterface;
 
 class OpenModalActionProvider implements ProviderInterface
 {
+    /**
+     * @var MessageFetcherResolver
+     */
+    private $messageFetcherResolver;
+
     /**
      * @var Client
      */
@@ -22,12 +28,14 @@ class OpenModalActionProvider implements ProviderInterface
     private $slackToken;
 
     /**
-     * @Named("httpClient=httpClient, slackToken=slackToken")
+     * @Named("messageFetcherResolver=messageFetcherResolver, httpClient=httpClient, slackToken=slackToken")
+     * @param MessageFetcherResolver $messageFetcherResolver
      * @param Client $httpClient
      * @param string $slackToken
      */
-    public function __construct(Client $httpClient, string $slackToken)
+    public function __construct(MessageFetcherResolver $messageFetcherResolver, Client $httpClient, string $slackToken)
     {
+        $this->messageFetcherResolver = $messageFetcherResolver;
         $this->httpClient = $httpClient;
         $this->slackToken = $slackToken;
     }
@@ -35,7 +43,7 @@ class OpenModalActionProvider implements ProviderInterface
 
     public function get()
     {
-        return new OpenModal($this->httpClient, $this->slackToken);
+        return new OpenModal($this->messageFetcherResolver, $this->httpClient, $this->slackToken);
     }
 
 }

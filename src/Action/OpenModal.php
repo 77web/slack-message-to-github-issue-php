@@ -7,9 +7,15 @@ namespace Quartetcom\SlackToGithubIssue\Action;
 use GuzzleHttp\Client;
 use Quartetcom\SlackToGithubIssue\Payload\Payload;
 use Quartetcom\SlackToGithubIssue\Payload\PayloadTypes;
+use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 
 class OpenModal implements ActionInterface
 {
+    /**
+     * @var MessageFetcherResolver
+     */
+    private $messageFetcherResolver;
+
     /**
      * @var Client
      */
@@ -21,11 +27,13 @@ class OpenModal implements ActionInterface
     private $slackOAuthToken;
 
     /**
+     * @param MessageFetcherResolver $messageFetcherResolver
      * @param Client $httpClient
      * @param string $slackOAuthToken
      */
-    public function __construct(Client $httpClient, string $slackOAuthToken)
+    public function __construct(MessageFetcherResolver $messageFetcherResolver, Client $httpClient, string $slackOAuthToken)
     {
+        $this->messageFetcherResolver = $messageFetcherResolver;
         $this->httpClient = $httpClient;
         $this->slackOAuthToken = $slackOAuthToken;
     }
@@ -53,7 +61,7 @@ class OpenModal implements ActionInterface
                         'type' => 'textarea',
                         'label' => 'issue内容',
                         'name' => 'issue_body',
-                        'value' => $payload->getMessage()['text'],
+                        'value' => $this->messageFetcherResolver->resolve($payload)->fetch($payload),
                     ],
                     [
                         'type' => 'text',
