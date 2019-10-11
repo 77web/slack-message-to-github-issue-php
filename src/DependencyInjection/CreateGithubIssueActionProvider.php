@@ -7,11 +7,17 @@ namespace Quartetcom\SlackToGithubIssue\DependencyInjection;
 use Github\Api\Issue;
 use Github\Client;
 use Quartetcom\SlackToGithubIssue\Action\CreateGithubIssue;
+use Quartetcom\SlackToGithubIssue\Github\DescriptionBuilderInterface;
 use Ray\Di\Di\Named;
 use Ray\Di\ProviderInterface;
 
 class CreateGithubIssueActionProvider implements ProviderInterface
 {
+    /**
+     * @var DescriptionBuilderInterface
+     */
+    private $descriptionBuilder;
+
     /**
      * @var Client
      */
@@ -28,13 +34,15 @@ class CreateGithubIssueActionProvider implements ProviderInterface
     private $githubRepository;
 
     /**
-     * @Named("githubClient=githubClient,githubOrganization=githubOrganization,githubRepository=githubRepository")
+     * @Named("descriptionBuilder=descriptionBuilder,githubClient=githubClient,githubOrganization=githubOrganization,githubRepository=githubRepository")
+     * @param DescriptionBuilderInterface $descriptionBuilder
      * @param Client $githubClient
      * @param string $githubOrganization
      * @param string $githubRepository
      */
-    public function __construct(Client $githubClient, string $githubOrganization, string $githubRepository)
+    public function __construct(DescriptionBuilderInterface $descriptionBuilder, Client $githubClient, string $githubOrganization, string $githubRepository)
     {
+        $this->descriptionBuilder = $descriptionBuilder;
         $this->githubClient = $githubClient;
         $this->githubOrganization = $githubOrganization;
         $this->githubRepository = $githubRepository;
@@ -43,7 +51,7 @@ class CreateGithubIssueActionProvider implements ProviderInterface
 
     public function get()
     {
-        return new CreateGithubIssue(new Issue($this->githubClient), $this->githubOrganization, $this->githubRepository);
+        return new CreateGithubIssue($this->descriptionBuilder, new Issue($this->githubClient), $this->githubOrganization, $this->githubRepository);
     }
 
 }
