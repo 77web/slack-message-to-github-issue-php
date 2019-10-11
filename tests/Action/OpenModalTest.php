@@ -8,15 +8,20 @@ use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Quartetcom\SlackToGithubIssue\Payload\Payload;
+use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherInterface;
+use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 
 class OpenModalTest extends TestCase
 {
     public function test_invoke()
     {
         $slackToken = 'dummy-token';
-        $payload = new Payload('dummy', 'dummy-trigger', ['id' => 'dummy-channel'], '12345.678', ['text' => 'dummy-message'], []);
+        $payload = new Payload('dummy', 'dummy-trigger', ['id' => 'dummy-channel'], '12345.678', [], []);
 
         $httpClientP = $this->prophesize(Client::class);
+        $messageFetcherP = $this->prophesize(MessageFetcherInterface::class);
+        $messageFetcherResolverP = $this->prophesize(MessageFetcherResolver::class);
+
         $httpClientP->post(Argument::type('string'), Argument::that(function($option){
             $this->assertEquals('application/json; charset=utf-8', $option['headers']['content-type']);
             $this->assertEquals('Bearer dummy-token', $option['headers']['authorization']);
@@ -26,8 +31,10 @@ class OpenModalTest extends TestCase
 
             return true;
         }))->shouldBeCalled();
+        $messageFetcherP->fetch($payload)->willReturn('dummy-message')->shouldBeCalled();
+        $messageFetcherResolverP->resolve($payload)->willReturn($messageFetcherP->reveal())->shouldBeCalled();
 
-        $SUT = new OpenModal($httpClientP->reveal(), $slackToken);
+        $SUT = new OpenModal($messageFetcherResolverP->reveal(), $httpClientP->reveal(), $slackToken);
         $SUT->invoke($payload);
     }
 }
