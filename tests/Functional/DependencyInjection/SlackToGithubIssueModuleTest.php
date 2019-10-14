@@ -13,7 +13,7 @@ class SlackToGithubIssueModuleTest extends TestCase
 {
     public function test()
     {
-        $injector = new Injector(new SlackToGithubIssueModule('dummy-slack-token', 'dummy-github-token', 'github-org', 'github-repo'));
+        $injector = new Injector(new SlackToGithubIssueModule('dummy-slack-token', 'dummy-slack-key', 'dummy-github-token', 'github-org', 'github-repo'));
         $this->assertInstanceof(App::class, $injector->getInstance(App::class));
     }
 }
