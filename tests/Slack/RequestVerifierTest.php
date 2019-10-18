@@ -12,7 +12,7 @@ class RequestVerifierTest extends TestCase
     public function test()
     {
         $verifier = new RequestVerifier('test');
-        $verifier->verify($this->getRequest('eccbb868bfb12a61eace17dada510e742793a6614852bd734634cebeae401a00'));
+        $verifier->verify($this->getRequest('v0=eccbb868bfb12a61eace17dada510e742793a6614852bd734634cebeae401a00'));
 
         $this->assertTrue(true);
     }
