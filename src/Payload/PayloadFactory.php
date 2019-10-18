@@ -14,10 +14,10 @@ class PayloadFactory
 
         return new Payload(
             $payload['type'],
-            $payload['trigger_id'],
-            $payload['channel'],
-            $payload['message_ts'],
-            $payload['message'],
+            $payload['trigger_id'] ?? '',
+            $payload['channel'] ?? [],
+            $payload['message_ts'] ?? '',
+            $payload['message'] ?? [],
             $payload['submission'] ?? []
         );
     }
