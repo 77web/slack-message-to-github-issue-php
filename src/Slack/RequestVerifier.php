@@ -38,7 +38,7 @@ class RequestVerifier
         $requestTimestamp = $request->headers->get('X-Slack-Request-Timestamp');
         $value = sprintf('v0:%s:%s', $requestTimestamp, $request->getContent());
 
-        return hash_hmac('sha256', $value, $this->signSecret);
+        return 'v0='. hash_hmac('sha256', $value, $this->signSecret);
     }
 
 
