@@ -30,6 +30,11 @@ class SlackToGithubIssueModule extends AbstractModule
     /**
      * @var string
      */
+    private $slackWorkspace;
+
+    /**
+     * @var string
+     */
     private $githubToken;
 
     /**
@@ -45,6 +50,7 @@ class SlackToGithubIssueModule extends AbstractModule
     /**
      * @param string $slackToken
      * @param string $slackSignatureKey
+     * @param string $slackWorkspace
      * @param string $githubToken
      * @param string $githubOrganization
      * @param string $githubRepository
@@ -52,12 +58,14 @@ class SlackToGithubIssueModule extends AbstractModule
     public function __construct(
         string $slackToken,
         string $slackSignatureKey,
+        string $slackWorkspace,
         string $githubToken,
         string $githubOrganization,
         string $githubRepository
     ) {
         $this->slackToken = $slackToken;
         $this->slackSignatureKey = $slackSignatureKey;
+        $this->slackWorkspace = $slackWorkspace;
         $this->githubToken = $githubToken;
         $this->githubOrganization = $githubOrganization;
         $this->githubRepository = $githubRepository;
@@ -74,6 +82,7 @@ class SlackToGithubIssueModule extends AbstractModule
         ]);
         $this->bind()->annotatedWith('slackToken')->toInstance($this->slackToken);
         $this->bind()->annotatedWith('slackSignatureKey')->toInstance($this->slackSignatureKey);
+        $this->bind()->annotatedWith('slackWorkspace')->toInstance($this->slackWorkspace);
 
         // Github
         $this->bind(GithubClient::class)->annotatedWith('githubClient')->toProvider(GithubClientProvider::class);
