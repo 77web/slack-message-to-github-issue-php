@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Quartetcom\SlackToGithubIssue\Payload\Payload;
 use Quartetcom\SlackToGithubIssue\Payload\PayloadTypes;
 use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
+use Quartetcom\SlackToGithubIssue\Slack\MessageUrlFactory;
 
 class OpenModal implements ActionInterface
 {
@@ -15,6 +16,11 @@ class OpenModal implements ActionInterface
      * @var MessageFetcherResolver
      */
     private $messageFetcherResolver;
+
+    /**
+     * @var MessageUrlFactory
+     */
+    private $messageUrlFactory;
 
     /**
      * @var Client
@@ -28,12 +34,14 @@ class OpenModal implements ActionInterface
 
     /**
      * @param MessageFetcherResolver $messageFetcherResolver
+     * @param MessageUrlFactory $messageUrlFactory
      * @param Client $httpClient
      * @param string $slackOAuthToken
      */
-    public function __construct(MessageFetcherResolver $messageFetcherResolver, Client $httpClient, string $slackOAuthToken)
+    public function __construct(MessageFetcherResolver $messageFetcherResolver, MessageUrlFactory $messageUrlFactory, Client $httpClient, string $slackOAuthToken)
     {
         $this->messageFetcherResolver = $messageFetcherResolver;
+        $this->messageUrlFactory = $messageUrlFactory;
         $this->httpClient = $httpClient;
         $this->slackOAuthToken = $slackOAuthToken;
     }
@@ -67,7 +75,7 @@ class OpenModal implements ActionInterface
                         'type' => 'text',
                         'label' => 'Slack上のURL',
                         'name' => 'slack_url',
-                        'value' => $payload->getMessageUrl(),
+                        'value' => $this->messageUrlFactory->create($payload),
                     ],
                 ],
             ]),
