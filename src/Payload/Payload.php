@@ -109,11 +109,4 @@ class Payload
     {
         return $this->submission;
     }
-
-    public function getMessageUrl()
-    {
-        list($ts1, $ts2) = explode('.', $this->messageTimestamp);
-
-        return sprintf(self::MESSAGE_URL_FORMAT, $this->channel['id'], $ts1, $ts2);
-    }
 }
