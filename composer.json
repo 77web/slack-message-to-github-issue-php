@@ -10,6 +10,7 @@
     ],
     "require": {
         "php": ">=7.2.0",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^6.3",
         "php-http/httplug": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
