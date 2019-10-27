@@ -25,5 +25,39 @@ class PayloadFactoryTest extends TestCase
 
         $this->assertEquals('dummy-type', $actual->getType());
         $this->assertEquals(['id' => 'dummy-channel'], $actual->getChannel());
+        $this->assertEquals([], $actual->getSubmission());
+    }
+
+    public function test_create_submission()
+    {
+        $req = $this->prophesize(Request::class);
+        $req->getContent()->willReturn(http_build_query(['payload' => json_encode([
+            'type' => 'dummy-type',
+            'trigger_id' => 'dummy-trigger-id',
+            'view' => [
+                'state' => [
+                    'values' => [
+                        'a' => [
+                            'name-1' => [
+                                'value' => '111'
+                            ],
+                        ],
+                        'b' => [
+                            'name-2' => [
+                                'value' => '222'
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ])]))->shouldBeCalled();
+
+        $SUT = new PayloadFactory();
+        $actual = $SUT->create($req->reveal());
+
+        $this->assertEquals([
+            'name-1' => '111',
+            'name-2' => '222',
+        ], $actual->getSubmission());
     }
 }
