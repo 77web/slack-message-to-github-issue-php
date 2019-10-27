@@ -24,7 +24,7 @@ class OpenModalTest extends TestCase
         $messageFetcherResolverP = $this->prophesize(MessageFetcherResolver::class);
         $messageUrlFactoryP = $this->prophesize(MessageUrlFactory::class);
 
-        $httpClientP->post(Argument::type('string'), Argument::that(function($option){
+        $httpClientP->post(Argument::containingString('views.open'), Argument::that(function($option){
             $this->assertEquals('application/json; charset=utf-8', $option['headers']['content-type']);
             $this->assertEquals('Bearer dummy-token', $option['headers']['authorization']);
             $this->assertTrue(is_string($option['body']));

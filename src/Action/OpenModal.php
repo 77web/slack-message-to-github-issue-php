@@ -53,37 +53,67 @@ class OpenModal implements ActionInterface
 
     public function invoke(Payload $payload): void
     {
-        $dialogData = [
+        $viewData = [
             'trigger_id' => $payload->getTriggerId(),
-            'dialog' => json_encode([
+            'view' => [
+                'type' => 'modal',
                 'callback_id' => 'div_development_create_lisket_support_issue',
-                'title' => 'サポートissue化',
-                'submit_label' => 'issue作成',
-                'elements' => [
+                'title' => [
+                    'type' => 'plain_text',
+                    'text' => 'サポートissue化',
+                ],
+                'submit' => [
+                    'type' => 'plain_text',
+                    'text' => 'issue作成',
+                ],
+                'close' => [
+                    'type' => 'plain_text',
+                    'text' => 'キャンセル',
+                ],
+                'blocks' => [
                     [
-                        'type' => 'text',
-                        'label' => 'issueタイトル',
-                        'name' => 'issue_title',
+                        'type' => 'input',
+                        'label' => [
+                            'type' => 'plain_text',
+                            'text' => 'issueタイトル',
+                        ],
+                        'element' => [
+                            'type' => 'plain_text_input',
+                            'action_id' => 'issue_title',
+                        ],
                     ],
                     [
-                        'type' => 'textarea',
-                        'label' => 'issue内容',
-                        'name' => 'issue_body',
-                        'value' => $this->messageFetcherResolver->resolve($payload)->fetch($payload),
+                        'type' => 'input',
+                        'label' => [
+                            'type' => 'plain_text',
+                            'text' => 'issue内容',
+                        ],
+                        'element' => [
+                            'type' => 'plain_text_input',
+                            'action_id' => 'issue_body',
+                            'multiline' => true,
+                            'initial_value' => $this->messageFetcherResolver->resolve($payload)->fetch($payload),
+                        ],
                     ],
                     [
-                        'type' => 'text',
-                        'label' => 'Slack上のURL',
-                        'name' => 'slack_url',
-                        'value' => $this->messageUrlFactory->create($payload),
+                        'type' => 'input',
+                        'label' => [
+                            'type' => 'plain_text',
+                            'text' => 'Slack上のURL',
+                        ],
+                        'element' => [
+                            'type' => 'plain_text_input',
+                            'action_id' => 'slack_url',
+                            'initial_value' => $this->messageUrlFactory->create($payload),
+                        ],
                     ],
                 ],
-            ]),
+            ],
         ];
 
-        // open dialog
-        $this->httpClient->post('https://slack.com/api/dialog.open', [
-            'body' => json_encode($dialogData),
+        // open interactive view
+        $this->httpClient->post('https://slack.com/api/views.open', [
+            'body' => json_encode($viewData),
             'headers' => [
                 'content-type' => 'application/json; charset=utf-8',
                 'authorization' => 'Bearer '.$this->slackOAuthToken,

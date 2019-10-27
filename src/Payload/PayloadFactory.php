@@ -18,7 +18,7 @@ class PayloadFactory
             $payload['channel'] ?? [],
             $payload['message_ts'] ?? '',
             $payload['message'] ?? [],
-            $payload['submission'] ?? []
+            $this->getSubmissionData($payload)
         );
     }
 
@@ -28,5 +28,24 @@ class PayloadFactory
         parse_str($request->getContent(), $parsed);
 
         return json_decode($parsed['payload'], true);
+    }
+
+    private function getSubmissionData(array $payload): array
+    {
+        if (empty($payload['view']['state']['values'])) {
+            return [];
+        }
+
+        $submission = [];
+        foreach ($payload['view']['state']['values'] as $valueData) {
+            $name = array_key_first($valueData);
+            $value = reset($valueData)['value'];
+
+            $submission[$name] = $value;
+        }
+
+        return $submission;
+
+
     }
 }
