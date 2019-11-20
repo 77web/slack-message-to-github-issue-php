@@ -6,6 +6,7 @@ namespace Quartetcom\SlackToGithubIssue\DependencyInjection;
 
 use GuzzleHttp\Client;
 use Quartetcom\SlackToGithubIssue\Action\OpenModal;
+use Quartetcom\SlackToGithubIssue\Slack\DialogFactory;
 use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 use Quartetcom\SlackToGithubIssue\Slack\MessageUrlFactory;
 use Ray\Di\Di\Named;
@@ -51,7 +52,7 @@ class OpenModalActionProvider implements ProviderInterface
 
     public function get()
     {
-        return new OpenModal($this->messageFetcherResolver, new MessageUrlFactory($this->slackWorkspace), $this->httpClient, $this->slackToken);
+        return new OpenModal(new DialogFactory($this->messageFetcherResolver, new MessageUrlFactory($this->slackWorkspace)), $this->httpClient, $this->slackToken);
     }
 
 }
