@@ -6,11 +6,10 @@ namespace Quartetcom\SlackToGithubIssue\DependencyInjection;
 use Github\Client as GithubClient;
 use GuzzleHttp\Client as HttpClient;
 use Quartetcom\SlackToGithubIssue\Action\ActionInterface;
-use Quartetcom\SlackToGithubIssue\Action\CreateGithubIssue;
-use Quartetcom\SlackToGithubIssue\Action\OpenModal;
 use Quartetcom\SlackToGithubIssue\ActionResolver;
 use Quartetcom\SlackToGithubIssue\Github\DescriptionBuilderInterface;
 use Quartetcom\SlackToGithubIssue\Github\PlainDescriptionBuilder;
+use Quartetcom\SlackToGithubIssue\Slack\DialogFactoryInterface;
 use Quartetcom\SlackToGithubIssue\Slack\MessageFetcherResolver;
 use Quartetcom\SlackToGithubIssue\Slack\RequestVerifier;
 use Ray\Di\AbstractModule;
@@ -101,6 +100,8 @@ class SlackToGithubIssueModule extends AbstractModule
         // DescriptionBuilder
         $this->bind(DescriptionBuilderInterface::class)->annotatedWith('descriptionBuilder')->to(PlainDescriptionBuilder::class);
 
+        // DialogFactory
+        $this->bind(DialogFactoryInterface::class)->annotatedWith('dialogFactory')->toProvider(DialogFactoryProvider::class);
     }
 
 }
